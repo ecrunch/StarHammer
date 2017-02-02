@@ -9,6 +9,7 @@ import pdb
 from yql.api import YQL
 from yahoo_finance import Share
 from datetime import datetime, timedelta
+from pullcount import pullcount 
 
 
 #Setup Server
@@ -145,103 +146,6 @@ stock_list = ['PTHN','GPRO','TSLA', 'UA']
 
 current_searches=0
 
-class pullcount:
-	def __init__(self, pulled_date):
-		self.today_date = pulled_date.strftime('%Y-%m-%d')
-		self.hour = pulled_date.strftime('%H')
-	
-		if db.pullcount.find({'Date':self.today_date,'Hour':self.hour}).count() > 0:
-			temp = db.pullcount.find_one({'Date':self.today_date,'Hour':self.hour})
-			self.count_of_yahoo_pulls = temp['Count']
-		else:
-			self.count_of_yahoo_pulls = 0
-
-		time_track = {
-			'Date': self.today_date ,
-			'Hour': self.hour,
-			'Count': self.count_of_yahoo_pulls
-		}
-		db.pullcount.update({'Date':time_track['Date'],'Hour':time_track['Hour']},time_track,True)
-
-	def add_search(self,symbol):
-
-		def add_count():
-			updated_count = (int(self.count_of_yahoo_pulls) + 1)
-			request_track = {
-				'Date': self.today_date,
-				'Hour': self.hour,
-				'Count': updated_count
-			}
-			db.pullcount.update({'Date':request_track['Date'],'Hour':request_track['Hour']},request_track,True)
-		
-
-		if (db.past_searches.find({'Symbol':symbol}).count() == 0):
-			search = {
-				'Symbol': symbol,
-				'Date': self.today_date,
-				'Hour': self.hour
-			}
-			db.past_searches.update({'Symbol': search['Symbol']},search,True)
-			add_count()
-			return True
-		else:
-			temp = db.past_searches.find_one({'Symbol':symbol})
-			
-			if (temp['Date'] < self.today_date and int(self.hour) > 18):
-				search = {
-				'Symbol': symbol,
-				'Date': self.today_date,
-				'Hour': self.hour
-				}
-				db.past_searches.update({'Symbol': search['Symbol']},search,True)
-				add_count()
-				return True
-			else: 
-				return False
-
-# current = datetime.today()
-# import csv
-# with open('S&P_500.csv', 'rb') as f:
-#     reader = csv.reader(f)
-#     for row in reader:
-#     	print row[0]
-#     	sign=str(row[0])
-#     	stock = Share(sign)
-#     	tracker = pullcount(current)
-#     	new_stock ={"Symbol": str(row[0]),"Name": str(stock.get_name()),"Last_Date": str(stock.get_trade_datetime()),"Historical_Data": []}
-#     	db.stock.update({"Symbol": str(row[0]), "Name": str(stock.get_name())}, new_stock, True)
-#     	old_date = (current - timedelta(days=365)).strftime('%Y-%m-%d')
-#     	print tracker.today_date
-#     	print old_date
-#     	historical_data=stock.get_historical(old_date, tracker.today_date)
-#     	for s in historical_data:
-# 	    	total_movement = float(s['High']) - float(s['Low'])
-# 	    	open_movement = float(s['Open']) - float(s['Low'])
-# 	    	close_movement = float(s['Close']) - float(s['Low'])
-# 	    	if total_movement !=0:	    
-# 	    		open_percent = open_movement/total_movement
-# 	    		close_percent = close_movement/total_movement
-
-# 	    	if open_percent < .30 and close_percent < .30:
-# 	    		s['Pattern'] = 'Shooting Star'
-# 	    	elif open_percent > .70 and close_percent > .70:
-# 	    		s['Pattern'] = 'Hammer'
-# 	    	else :
-# 	    		s['Pattern'] = 'none'
-# 	    	open_percent=0
-# 	    	close_percent=0
-
-#     	for t in historical_data:
-# 	    	pprint.pprint(t)
-# 	    	print t['Symbol']
-# 	    	db.stock.update({"Symbol": t["Symbol"]}, {'$addToSet':{'Historical_Data':t}},upsert=True,multi=True)
-
-
-
-
-
-
-		
 
 @app.route('/api/stocks')
 
