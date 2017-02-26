@@ -1,9 +1,10 @@
-import quandl
-quandl.ApiConfig.api_key ='Q7DSNVGYPQ9WnMmxEgVb'
+#!/usr/bin/python
+#import quandl
+#quandl.ApiConfig.api_key ='Q7DSNVGYPQ9WnMmxEgVb'
 import pprint
 import pymongo
 import pdb
-import pandas
+#import pandas
 import json
 from bson import json_util
 import requests

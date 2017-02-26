@@ -1,6 +1,6 @@
 import pymongo
 import json
-from yahoo_finance import Share
+#from yahoo_finance import Share
 from datetime import datetime, timedelta
 import pprint
 from bson import json_util
