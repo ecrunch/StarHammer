@@ -19,9 +19,9 @@ for t in hammer:
 	Hist_array = 0
 	try:
                 for s in t['Historical_Data']:
-                        print t['Symbol']
-                        print s['Pattern']
-                        print s
+                        #print t['Symbol']
+                        #print s['Pattern']
+                        #print s
                         
                         if s['Pattern'] == 'Hammer' and (s['Pattern_Strength'] == 'Strong' or s['Pattern_Strength'] == 'Medium'):
                                 pattern_date = s['Date']
@@ -92,8 +92,8 @@ for t in hammer:
                                                         streak_type = 0
                                                         break
                                 yester = current - datetime.strptime(pattern_date,"%Y-%m-%d")
-                                print yester
-                                if len(streak_type_arr) > 2 and yester.days < 4: 
+                                #print yester
+                                if len(streak_type_arr) > 2 and yester.days == 3: 
                                         print t['Symbol']
                                         print pattern_date
                                         print streak_type_arr
